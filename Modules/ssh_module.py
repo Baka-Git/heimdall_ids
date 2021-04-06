@@ -3,7 +3,7 @@ import time
 
 
 #  need to install paramiko
-#  pip install param
+#  pip install paramiko
 #  if problem with installing paramiko, use sudo apt install python3-pip
 #  and run again
 
