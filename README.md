@@ -19,23 +19,23 @@ Program should be run from terminal by command: sudo python3 main.py ARGUMENTS
 ### Methods
 -Heimdall uses 4 methods for detection:
 #### 1. SYN Flood Method
- - Decidion if attack happend or not depends on ration between number of SYN packets and ACK packets.
- - In normal comunication SYN packets are used only at begining of comunication in 3-way handshake. ACK packets are used in 3-way handshake too, but are als used for conrfirmation of every packet.
- - If number of SYN packets is bigger than ACK packets chance that attack is hapenning encreases.
+ - Decision if attack happened or not depends on ration between number of SYN packets and ACK packets.
+ - In normal communication SYN packets are used only at beginning of communication in 3-way handshake. ACK packets are used in 3-way handshake too, but are als used for conrfirmation of every packet.
+ - If number of SYN packets is bigger than ACK packets chance that attack is happening increases.
  - Rule is than 1-NUMBER_OF_ACK/NUMBER_OF_SYN
 #### 2. UDP Flood Method
-- In this method decidion depends on number of UDP datagrams.
+- In this method decision depends on number of UDP datagrams.
 - If number is bigger than given rule, Heimdall will signal an alarm.
-- Rule is MAX_NUMER_OF_UDP.
+- Rule is MAX_NUMBER_OF_UDP.
 #### 3. ICMP Flood Method
- - In this method decidion depends on number of ICMP packets.
+ - In this method decision depends on number of ICMP packets.
 - If number is bigger than given rule, Heimdall will signal an alarm.
- - Rule is MAX_NUMER_OF_UDP.
+ - Rule is MAX_NUMBER_OF_UDP.
 #### 4. Complex Method
- - Compex Method watchs traffic and compute how many packets are send for given timer.
+ - Complex Method watches traffic and compute how many packets are send for given timer.
  - Bigger number of packet than normal value does not mean attack.
- - Attack is detected if this case happend in 20times in 40times interval.
-- Rule is MAX_NUMER_OF_PACKETS_FOR_TIMER.
+ - Attack is detected if this case happened in 20times in 40times interval.
+- Rule is MAX_NUMBER_OF_PACKETS_FOR_TIMER.
 
 ### Logs
 - information about attacks are stored in log file and shown in console line
@@ -78,10 +78,10 @@ Mon Mar 22 14:57:38 2021; UDP Flood; 9; 00:50:56:C0:00:08; 192.168.133.1
 #### Rules
 - to change rules for methods [packets/host]
 ```
-# change rule for one mehtod
+# change rule for one method
 -r syn-2
 # change rules for several methods
--r syn-2,compex-100
+-r syn-2,complex-100
 ```
 ### Minimum parameters to enable Detection Module
 - Detection Module can be enabled only if number of host is known
@@ -94,10 +94,10 @@ sudo main.py -d all -r syn-0.3,udp-100 -t complex-5 --number_of_hosts 5
 sudo python3 main.py -d syn,udp -s 192.168.1.0/24 
 ```
 ## ARP Scan
-- Module for findig all hosts in the network
-- Use ARP request to findout if IP address is UP or DOWN
+- Module for finding all hosts in the network
+- Use ARP request to find out if IP address is UP or DOWN
 - If known IP address does not respond in given time, host will be set in IDS as DOWN
-- In use with Detection Module, rules can be dynamicaly changed depedniding how many host are in the network
+- In use with Detection Module, rules can be dynamically changed depending how many host are in the network
 - Scan can be use also without other Modules
 ### Enable ARP Scan
 ```
@@ -117,9 +117,9 @@ sudo python3 main.py -d syn,udp -s 192.168.1.0/24
 sudo python3 main.py -d all -l 120
 ```
 ## SSH Module
-- Module for comunication with Mikrotik Router
+- Module for communication with Mikrotik Router
 - paramiko library is used in this Module
-- Module enables shuting down ports where attacker is, and enable to connect host to the interface on the Router
+- Module enables shutting down ports where attacker is, and enable to connect host to the interface on the Router
 - Required parameter to enable SSH module is set some interfaces as SAFE (Interfaces cannot be shut down)
 - Module can be used only if Detection Module or ARP Scan is used too
 ```
