@@ -79,7 +79,7 @@ class Detection:
         log = "; ".join(list_of_parameters)
         print(log)
         try:
-            f = open("detection.log", "a")
+            f = open("heimdall_logs.log", "a")
             f.write(log + "\n")
         finally:
             f.close()

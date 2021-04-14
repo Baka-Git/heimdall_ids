@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b777e837-eb2e-471e-bc2f-2ac4e207f565" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/arp_scan_module.py" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/arp_scan_module.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/detection_module.py" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/detection_module.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/present_info_module.py" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/present_info_module.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />

@@ -3,7 +3,6 @@ from Modules.arp_scan_module import same_size
 
 def get_detection_info(detection, boarder, max_width):
     type_det_part_width = 12
-    print(detection.rule_on_one_host)
     det_info = " " + 51 * "_" + "\n"
     sentence = "DETECTION - "
     if detection is None:

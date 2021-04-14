@@ -43,7 +43,6 @@ class ArpScan:
         ip = get_ip_address(src_ip)
         mac = get_mac_address(src_mac)
         if self.arp_valid(ip, mode):
-
             self.list_update(ip, mac)
 
     # function  for validation if arp is response and is from group to which arp scan send arp requests
@@ -76,7 +75,6 @@ class ArpScan:
         index = 0
         for bond in self.list_of_bonds:
             if time_is_up - bond.timer > self.interval_actual and bond.info != "IDS" and bond.info != "Fake?":
-                print(bond.ip)
                 self.list_of_bonds.pop(index)
             index += 1
 
@@ -128,8 +126,9 @@ class ArpScan:
             print(" Info  | MAC               | IP              | Int    | Time | Verification")
             for bond in self.list_of_bonds:
                 info = same_size(bond.info, info_part)
-                if bond.info != "IDS" and bond.info != "Fake?":
+                if bond.info == "New!":
                     bond.info = ""
+                    logging(bond.int, bond.mac, bond.ip)
                 mac = same_size(bond.mac, mac_part)
                 ip = same_size(bond.ip, ip_part)
                 inter = same_size(bond.int, int_part)
@@ -172,7 +171,7 @@ class ArpScan:
     def get_hosts_in_network(self):
         start = time.perf_counter()
         s = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(3))
-        list_info=[True,True,True]
+        list_info = [True, True, True]
         print("Heimdall is scanning!")
         while True:
 
@@ -262,3 +261,13 @@ def get_my_ip():
     ip = s.getsockname()[0]
     s.close()
     return ip
+
+
+def logging(interface, mac, ip):
+    list_of_parameters = [time.ctime(time.time()), "New Host", interface, mac, ip]
+    log = "; ".join(list_of_parameters)
+    try:
+        f = open("heimdall_logs.log", "a")
+        f.write(log + "\n")
+    finally:
+        f.close()
