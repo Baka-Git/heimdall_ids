@@ -196,12 +196,14 @@ class ArpScan:
             self.arp_send()
         return len(self.list_of_bonds)
 
+    # function for connect all MAC addresses, IP addresses and Interfaces
     def connect_mac_ip_int(self):
         a = True
         while a:
             a = self.connect_mac_ip_int_help()
         return True
 
+    # help function for connect one MAC address, IP address and Interface
     def connect_mac_ip_int_help(self):
         for i in range(0, len(self.list_of_bonds)):
             if self.list_of_bonds[i].ip == "-":
@@ -211,6 +213,10 @@ class ArpScan:
                         self.list_of_bonds.pop(i)
                         return True
         return False
+
+    # function for getting number of host during run
+    def get_number_of_hosts(self):
+        return len(self.list_of_bonds)
 
     # function for running ARP scan
     def run(self, ether):
@@ -263,6 +269,7 @@ def get_my_ip():
     return ip
 
 
+# function for logging new hosts in network
 def logging(interface, mac, ip):
     list_of_parameters = [time.ctime(time.time()), "New Host", interface, mac, ip]
     log = "; ".join(list_of_parameters)

@@ -9,9 +9,9 @@ from Modules.parse_module import *
 from Modules.learn_module import *
 from Modules.present_info_module import inform_user
 
+
 # need to be configured on IDS
 # ip link set [interface] promisc on
-
 
 
 def run():
@@ -25,19 +25,19 @@ def run():
     hosts = info[3]
 
     # ARP SCAN SET
-    arp=None
+    arp = None
     if info[1] is not None:
         #  ip_help, part = ip_control("192.168.133.0/24")
         list_of_ips = ip_address_generator(info[1][0], info[1][1])
         arp = ArpScan(list_of_ips, 10, 50, info[4])
-        if info[2] is not None:
+        if info[0] is not None:
             hosts = arp.get_hosts_in_network()
 
     # LEARNING
-    learning=None
+    learning = None
     if info[2] is not None:
         info[0] = learn(info[0], info[2], hosts)
-        learning=True
+        learning = True
     # DETECTION SET
     det = None
     if info[0] is not None:
@@ -57,7 +57,9 @@ def run():
         # ARP SCAN
         if info[1] is not None:
             arp.run(ether)
-
+            # change dynamically number of host for detection
+            if info[0] is not None:
+                hosts = arp.get_number_of_hosts()
         # DETECTION
         if info[0] is not None:
             # detecting part
