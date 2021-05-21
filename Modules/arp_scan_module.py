@@ -3,6 +3,7 @@ import struct
 from Modules.sniffer_tools import *
 from Modules.ssh_module import *
 import uuid
+from Modules.present_info_module import *
 
 
 #   helping class to store several information about one "host"
@@ -128,7 +129,8 @@ class ArpScan:
                 info = same_size(bond.info, info_part)
                 if bond.info == "New!":
                     bond.info = ""
-                    logging(bond.int, bond.mac, bond.ip)
+                    logging(bond.int, bond.mac, bond.ip, 4)
+                    # logging(bond.int, bond.mac, bond.ip)
                 mac = same_size(bond.mac, mac_part)
                 ip = same_size(bond.ip, ip_part)
                 inter = same_size(bond.int, int_part)
@@ -229,13 +231,7 @@ class ArpScan:
             self.timer_actual = time.perf_counter()
 
 
-# help function for dynamically change size of part of the table
-def same_size(info, size):
-    string_info = " " + str(info)
-    while len(string_info) < size:
-        string_info += " "
-    string_info += "|"
-    return string_info
+
 
 
 # function for translating verification number to word comment
@@ -269,12 +265,3 @@ def get_my_ip():
     return ip
 
 
-# function for logging new hosts in network
-def logging(interface, mac, ip):
-    list_of_parameters = [time.ctime(time.time()), "New Host", interface, mac, ip]
-    log = "; ".join(list_of_parameters)
-    try:
-        f = open("heimdall_logs.log", "a")
-        f.write(log + "\n")
-    finally:
-        f.close()

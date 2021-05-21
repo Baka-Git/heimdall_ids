@@ -1,4 +1,4 @@
-from Modules.arp_scan_module import same_size
+import time
 
 
 def get_detection_info(detection, boarder, max_width):
@@ -23,7 +23,7 @@ def get_detection_info(detection, boarder, max_width):
         index = 0
         for info in list_det_info:
             if info:
-                det_info += same_size(str(detection.rule_on_one_host[index])[0:4], type_det_part_width)
+                det_info += same_size(rule_help(detection.rule_on_one_host[index], index), type_det_part_width)
                 index += 1
             else:
                 det_info += same_size("-", type_det_part_width)
@@ -116,15 +116,50 @@ def inform_user(detection, arp_scan, network, hosts, learn, ssh, safe_int):
     safe_int_info = get_safe_int_info(safe_int, boarder, max_width)
     print(det_info + arp_info + learn_info_ + ssh_info + safe_int_info)
 
-# max_width = 51
-# boarder = "|" + 51 * "_" + "|\n"
-# a = Detection([[True, 5, 0], [False, 0, 0], [False, 0, 0], [False, 0, 5]], None, None, 3)
-# det = get_detection_info(a, boarder, max_width)
-# b = ArpScan([], 5, 5, None)
-# arp = get_arp_info(b, "192.168.1.0/24", 5, boarder, max_width)
-# learn_ = get_learn_info(True, boarder, max_width)
-# ssh = get_ssh_info("192.168.1.1", "admin", boarder, max_width)
-# safe_int = get_safe_int_info(["ehter1", "ether2"], boarder, max_width)
-# print(det + arp + learn_ + ssh + safe_int)
-# inform_user(a,None,None,None,True,None,None,[])
-# help_syn_rule(0.5555555)
+
+def rule_help(rule, is_syn):
+    if is_syn == 0 and rule < 1:
+        rule = str(rule)[0:5]
+    else:
+        rule = str(int(rule))
+    max_size = 5
+    len_of_rule = len(rule)
+    new_rule = rule + (max_size - len_of_rule) * " "
+    return new_rule
+
+
+# function for logging events
+def logging(parameter, mac, ip, type):
+    time_now = time.ctime(time.time())
+    # parameter for detection = parameter which broke rule, for scan is Interface info
+    # type 0-Syn Flood, 1-Udp Flood, 2- Icmp flood, 3- Flood, 4 - New Host
+    if type == 0:
+        stype = "SYN Flood"
+    elif type == 1:
+        stype = "UDP Flood"
+    elif type == 2:
+        stype = "ICMP Flood"
+    elif type == 3:
+        stype = "Flood Attack"
+    elif type == 4:
+        stype = "New Host!"
+    list_of_parameters = [time_now, stype, str(parameter), mac, ip]
+    log = "; ".join(list_of_parameters)
+    if type != 4:
+        print(log)
+    try:
+        f = open("heimdall_logs.log", "a")
+        f.write(log + "\n")
+    finally:
+        f.close()
+
+
+# help function for dynamically change size of part of the table
+def same_size(info, size):
+    string_info = " " + str(info)
+    while len(string_info) < size:
+        string_info += " "
+    string_info += "|"
+    return string_info
+
+

@@ -3,7 +3,7 @@ Heimdall IDS is IDS for Detection and Mitigation of flood DDoS attacks in LANs.
 
 Heimadall IDS is using paramiko library (https://github.com/paramiko/paramiko). Licence for this library can be found in folder licences. Import of paramiko can be done from CLI by command: ```pip install paramiko```. In case of trouble with pip, actualize him by command ```sudo apt install python3-pip``` and repeat previous command.
 
-Program is created for my Bachelor Degree Work and his purpose is to detect and mitigate Flooding Attacks
+Program is created for my Bachelor Thesis and his purpose is to detect and mitigate Flooding Attacks.
 ## Function of Heimdall IDS:
 - Detection of flood attacks (4 methods)
 - ARP Scan
@@ -21,7 +21,7 @@ add mirror=yes ports=ether1,ether2 switch=switch1
 ```
 Machine with IDS should also have interface set in promiscuous mode. Example for Linux:
 ```
-ip link set ether1 mode promisc on
+ip link set ether0 promisc on
 ```
 Program should be run from terminal by command: 
 ```
@@ -29,15 +29,15 @@ sudo python3 main.py ARGUMENTS
 ```
 
 ## Detection Module
-- Module for enabling detection of Flood DDoS attack. If attack happends, log will be shown in console and also will be saved into the file heimdall_logs.log
+- Module for enabling detection of Flood DDoS attack. If attack happens, log will be shown in console and also will be saved into the file heimdall_logs.log
 
 ### Methods
 - Heimdall uses 4 methods for detection:
 #### 1. SYN Flood Method
  - Decision if attack happened or not depends on ration between number of SYN packets and ACK packets.
- - In normal communication SYN packets are used only at beginning of communication in 3-way handshake. ACK packets are used in 3-way handshake too, but are als used for conrfirmation of every packet.
+ - In normal communication SYN packets are used only at beginning of communication in 3-way handshake. ACK packets are used in 3-way handshake too, but are als used for confirmation of every packet.
  - If number of SYN packets is bigger than ACK packets chance that attack is happening increases.
- - Rule is than 1-NUMBER_OF_ACK/NUMBER_OF_SYN
+ - Rule is than NUMBER_OF_SYN/NUMBER_OF_ACK
 #### 2. UDP Flood Method
 - In this method decision depends on number of UDP datagrams.
 - If number is bigger than given rule, Heimdall will signal an alarm.
@@ -100,7 +100,7 @@ Mon Mar 22 14:57:38 2021; UDP Flood; 9; 00:50:56:C0:00:08; 192.168.133.1
 ```
 ### Minimum parameters to enable Detection Module
 - Detection Module can be enabled only if number of host is known
-- That could be done by manual set number of hosts or enable ARP Scan
+- That could be done by manual set number of hosts (IDS and router included) or enable ARP Scan
 ### Examples of enabling Detection Module
 ```
 # first example

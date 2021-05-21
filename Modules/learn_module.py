@@ -57,11 +57,15 @@ def learn(det_con, time_for_learn, hosts):
             # set it as max value
             if list_of_det[point] and (time.perf_counter() - list_of_timers[point] > list_of_times[point]):
                 list_of_timers[point] = time.perf_counter()
-                if list_of_temp_values[point] > list_of_counter[point]:
-                    # if point==2:
-                    #   print(time.ctime(time.time()))
-                    #  print(list_of_temp_values[point])
-                    list_of_counter[point] = list_of_temp_values[point]
+                if point == 0:
+                    if list_of_temp_values[1] != 0 and list_of_temp_values[0]/list_of_temp_values[1] > list_of_counter[point]:
+                        list_of_counter[point] = list_of_temp_values[0] / list_of_temp_values[1]
+                elif point != 1:
+                    if list_of_temp_values[point] > list_of_counter[point]:
+                        # if point==2:
+                        #   print(time.ctime(time.time()))
+                        #  print(list_of_temp_values[point])
+                        list_of_counter[point] = list_of_temp_values[point]
                 list_of_temp_values[point] = 0
 
         if time_for_learn / 4 < time.perf_counter() - start and list_info[0] == 0:
@@ -78,9 +82,8 @@ def learn(det_con, time_for_learn, hosts):
             print("Learning: Done!")
             break
 
-    list_of_rule = [0.5, 0, 0, 0]
-    for i in range(0, 5):
-        list_of_counter[i] = list_of_counter[i] / hosts
+    for i in range(1, 4):
+        list_of_counter[i] = list_of_counter[i] / hosts * 2
 
     # return value of counter of packets of each type for ONE host in given timer
 
@@ -89,10 +92,10 @@ def learn(det_con, time_for_learn, hosts):
             if list_of_counter[0] == 0:
                 det_con[i][2] = 0.5
             else:
-                det_con[i][2] = 1 - list_of_counter[1] / list_of_counter[0]
+                det_con[i][2] = list_of_counter[0]
         else:
-            det_con[i][2] = list_of_counter[i + 1]
+            det_con[i][2] = list_of_counter[i+1]
 
     return det_con
 
-# learn(True, True, True, True, 10, 10, 10, 3, 120, 2)
+

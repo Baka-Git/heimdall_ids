@@ -10,7 +10,7 @@ def parse():
         "/@@/   @@@@@@@@   @@@@@@   @@  @@   @@@@  @@   @@    @@   @@   @@   @@     @@\n   \@@\|@@|/@@/   @@    @@   @@ "
         "      @@  @@    @@   @@   @@    @@   @@@@@@@@  @@     @@ \n    \@@@@@@@@/   @@    @@   @@@@@@@  @@  @@         "
         "@@  @@@@@@@    @@      @@ @@@@@@ @@@@@@@\n     \@@@@@@/\n      \@@@@/    @@  @@@   @@@@       Vyrobil (Made "
-        "by): Baka\n       |@@|    @@  @@ @@ @@          V rámci Bakalářské práce (For Bachaelor Degree Work)\n       "
+        "by): Baka\n       |@@|    @@  @@ @@ @@          V rámci Bakalářské práce (For Bachelor Thesis)\n       "
         "|@@|   @@  @@ @@   @@\n       |@@|  @@  @@@@  @@@@ \n       |@@|\n       |@@|")
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--detection",
@@ -40,7 +40,7 @@ def parse():
                                                        "interfaces. This argument must be used together with SSH. "
                                                        "Example: '-i ether0,ether1'")
     args = parser.parse_args()
-    #print(args)
+    # print(args)
     values = arg_control(args)
     return values
 
@@ -70,7 +70,7 @@ def det_arg_con(list_of_det, list_of_timer, list_of_rule):
     if list_of_det is None:
         list_of_det = [False, False, False, False]
     if list_of_timer is None:
-        list_of_timer = [5, 5, 5, 5]
+        list_of_timer = [5, 5, 5, 1]
     if list_of_rule is None:
         list_of_rule = [1 / 2, 20, 20, 20]
     list_con = [[False, 0, 0], [False, 0, 0], [False, 0, 0], [False, 0, 0]]
@@ -123,39 +123,39 @@ def control(args, type, error_message):
             args = ip_control(args)
         elif type == 4:  # ssh
             args = ssh_arg(args)
-        if args == False:
+        if args is False:
             print(error_message)
     return args
 
 
 def arg_control(args):
     det_info = control(args.detection, 0, "Detection has got wrong arguments!")
-    if det_info == False:
+    if det_info is False:
         return False
     det_rule = control(args.detection_rule, 1, "Detection timer has got wrong arguments!")
-    if det_rule == False:
+    if det_rule is False:
         return False
     det_timer = control(args.detection_timer, 1, "Detection rule parameter has got wrong arguments!")
-    if det_timer == False:
+    if det_timer is False:
         return False
     hosts = control(args.number_of_hosts, 2, "Number of hosts has got wrong argument!")
-    if hosts == False:
+    if hosts is False:
         return False
     learn = control(args.learn, 2, "Learning has got wrong argument!")
-    if learn == False:
+    if learn is False:
         return False
     scan = control(args.scan, 3, "Scan has got wrong argument!")
-    if scan == False:
+    if scan is False:
         return False
     ssh = control(args.connect_ssh, 4, "SSH has got wrong arguments!")
-    if ssh == False:
+    if ssh is False:
         return False
     safe = args.safe_interface
     if safe is not None:
         safe = safe.split(",")
 
     if ssh is not None and det_info is None and scan is None:
-        print("SSH Module can be enabled only with Detection Module!")
+        print("SSH Module can be enabled only with Detection Module or ARP Scan!")
         return False
     elif learn is not None and det_info is None:
         print("Learning Module can be enabled only with Detection Module!")
@@ -177,12 +177,13 @@ def arg_control(args):
     if det_con == [[False, 0, 0], [False, 0, 0], [False, 0, 0], [False, 0, 0]]:
         det_con = None
 
-    if [[[False, 0, 0], [False, 0, 0], [False, 0, 0], [False, 0, 0]], None, None, None, None, None, None] == [det_con, scan,
-                                                                                                        learn, hosts,
-                                                                                                        ssh, safe,args.scan]:
+    if [[[False, 0, 0], [False, 0, 0], [False, 0, 0], [False, 0, 0]], None, None, None, None, None, None] == [det_con,
+                                                                                                              scan,
+                                                                                                              learn,
+                                                                                                              hosts,
+                                                                                                              ssh, safe,
+                                                                                                              args.scan]:
         return False
     return [det_con, scan, learn, hosts, ssh, safe, args.scan]
 
 
-
-# parse()

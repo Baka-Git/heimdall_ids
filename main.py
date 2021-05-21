@@ -32,7 +32,8 @@ def run():
         arp = ArpScan(list_of_ips, 10, 50, info[4])
         if info[0] is not None:
             hosts = arp.get_hosts_in_network()
-
+    if hosts is not None and hosts > 2:
+        hosts -= 2
     # LEARNING
     learning = None
     if info[2] is not None:
@@ -60,6 +61,8 @@ def run():
             # change dynamically number of host for detection
             if info[0] is not None:
                 hosts = arp.get_number_of_hosts()
+                if hosts > 2:
+                    hosts -= 2
         # DETECTION
         if info[0] is not None:
             # detecting part

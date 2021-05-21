@@ -8,7 +8,6 @@ class SynFlood:
         self.limit = limit
         self.interval_of_detection = timer
         self.timer_of_detection = time.perf_counter()
-        self.min = 5
         self.id = 0
 
     def change_rule(self, new_rule):
@@ -22,8 +21,12 @@ class SynFlood:
 
     def detection(self):
         if time.perf_counter() - self.timer_of_detection > self.interval_of_detection:
-            if self.syn > self.min and 1 - self.ack / self.syn > self.limit:
-                parameter = 1 - self.ack / self.syn
+            self.timer_of_detection = time.perf_counter()
+
+            if self.ack == 0 and self.syn>100:
+                self.ack=1
+            if self.ack !=0 and  self.syn / self.ack > self.limit:
+                parameter = self.syn / self.ack
                 self.timer_of_detection = time.perf_counter()
                 self.ack = 0
                 self.syn = 0
@@ -120,7 +123,7 @@ class ComplexDetection:
 
     def actual(self, info):
         self.number += 1
-        if time.perf_counter() - self.timer_of_value > 3:
+        if time.perf_counter() - self.timer_of_value > self.interval_of_detection:
             self.add_number(self.number)
             self.number = 0
             self.timer_of_value = time.perf_counter()

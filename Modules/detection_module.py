@@ -2,13 +2,14 @@ from Modules.detection_classes import *
 from Modules.packets import *
 from Modules.ssh_module import *
 from Modules.sniffer_tools import *
+from Modules.present_info_module import *
 
 
 class Detection:
     def __init__(self, det_con, ssh_info, safe_int, number_of_hosts):
         # list of rules on one host, given by learning module, user or default
         self.rule_on_one_host = []
-        self.list_of_timers=[]
+        self.list_of_timers = []
         # if detection is enabled, this will enabling each detection mode by given setting
         if det_con is not None:
             self.syn_on = det_con[0][0]
@@ -34,7 +35,7 @@ class Detection:
         # change rules according number of host, syn rule will not be change, because syn rule is not depending on
         # number of hosts
         for i in range(1, len(det_con)):
-            det_con[i][2] = det_con[i][2] * self.number_of_hosts * 2
+            det_con[i][2] = det_con[i][2] * self.number_of_hosts
         # setting all rules for each mode if it is enabled
         if self.syn_on:
             self.list_of_detection.append(SynFlood(det_con[0][1], det_con[0][2]))
@@ -59,30 +60,11 @@ class Detection:
             det_value = det_class.detection()
             if det_value is not False:
                 # print(det_class.id)
-                self.log(det_class.id, det_value)
-
-    def log(self, type, parameter):
-        mac, ip = self.attacker_hunter(type)
-        # if SSH Module is enabled, interface where BAD MAC address is found will be shutdown
-        if self.ssh_info is not None:
-            ssh_ban(self.safe_int, mac, self.ssh_info[0], self.ssh_info[1], self.ssh_info[2])
-        time_now = time.ctime(time.time())
-        if type == 0:
-            stype = "SYN Flood"
-        elif type == 1:
-            stype = "UDP Flood"
-        elif type == 2:
-            stype = "ICMP Flood"
-        else:
-            stype = "Flood Attack"
-        list_of_parameters = [time_now, stype, str(parameter), mac, ip]
-        log = "; ".join(list_of_parameters)
-        print(log)
-        try:
-            f = open("heimdall_logs.log", "a")
-            f.write(log + "\n")
-        finally:
-            f.close()
+                mac, ip = self.attacker_hunter(det_class.id)
+                # if SSH Module is enabled, interface where BAD MAC address is found will be shutdown
+                if self.ssh_info is not None:
+                    ssh_ban(self.safe_int, mac, self.ssh_info[0], self.ssh_info[1], self.ssh_info[2])
+                logging(det_value, mac, ip, det_class.id)
 
     def attacker_hunter(self, type):
         # list of all source MAC addresses in list of all packets
@@ -125,6 +107,7 @@ class Detection:
 
     def run(self, ether, number_of_hosts):
         self.detection()
+
         # if IP protocol is used, control
         if ether[2] == 8:
             # unpacking ipv4 header
