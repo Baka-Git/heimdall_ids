@@ -15,9 +15,9 @@ Router should mirror all traffic to interface where IDS is.
 Example for Mikrotik:
 ```
 /interface ethernet switch
-set switch1 mirror-source=none mirror-target=ether3
+set switch1 mirror-source=none mirror-target=ether2
 /interface ethernet switch rule
-add mirror=yes ports=ether1,ether2 switch=switch1
+add mirror=yes ports=ether3,ether4 switch=switch1
 ```
 Machine with IDS should also have interface set in promiscuous mode. Example for Linux:
 ```
@@ -27,7 +27,19 @@ Program should be run from terminal by command:
 ```
 sudo python3 main.py ARGUMENTS
 ```
-
+- IDS was tested in this topology:
+```
+  Internet
+     |
+     | Ether1           Network 192.168.88.0/24 
+_____|______                        ___________________________________
+| Mikrotik |___Ether2______________| IDS (IP address 192.168.88.240)   |
+| Router   |                        >=================================<
+|__________|___Ether3______________| Attacker (IP address 192.168.88.100)|
+      |                            >====================================<
+      |________Ether4______________| Victim (IP address 192.168.88.250)  |
+                                   |_____________________________________|
+```
 ## Detection Module
 - Module for enabling detection of Flood DDoS attack. If attack happens, log will be shown in console and also will be saved into the file heimdall_logs.log
 
@@ -45,13 +57,38 @@ sudo python3 main.py ARGUMENTS
 #### 3. ICMP Flood Method
  - In this method decision depends on number of ICMP packets.
 - If number is bigger than given rule, Heimdall will signal an alarm.
- - Rule is MAX_NUMBER_OF_UDP.
+ - Rule is MAX_NUMBER_OF_ICMP.
 #### 4. Complex Method
  - Complex Method watches traffic and compute how many packets are send for given timer.
  - Bigger number of packet than normal value does not mean attack.
  - Attack is detected if this case happened in 20times in 40times interval.
 - Rule is MAX_NUMBER_OF_PACKETS_FOR_TIMER.
+```
+Normal Traffic
 
+Amount of packets
+^
+|
+|      _ _
+|˛˛˛ _|˛|˛|˛˛˛˛˛˛˛˛˛˛˛˛˛˛˛˛  Danger Zone's Bordder
+|   | | | |_
+|  _| | | | |_     _
+|_| | | | | | |_ _| |_
+|_|_|_|_|_|_|_|_|_|_|_|_> Time
+
+
+Flood Attack
+
+Amount of packets
+^
+|
+|    _ _ _ _ _ _ _ _ _ 
+|˛˛˛|˛|˛|˛|˛|˛|˛|˛|˛|˛|˛˛˛˛˛˛  Danger Zone's Border
+|   | | | | | | | | | |
+|  _| | | | | | | | | |
+|_| | | | | | | | | | |
+|_|_|_|_|_|_|_|_|_|_|_|_> Time
+```
 ### Detection Logs
 - Information about attacks are stored in log file and shown in console line
 
@@ -59,8 +96,8 @@ sudo python3 main.py ARGUMENTS
 1. Part of log is time, when attack was detected
 2. Part is a description what attack did happen
 3. Part is value of parameter which was the reason why IDS marked the traffic as an attack
-4. Part is an IP address of the "attack"
-5. Part is a MAC of the "attacker"
+4. Part is a MAC address of the "attack"
+5. Part is a an IP of the "attacker"
 - Attacker is here most used MAC address and IP address which are matched togehter
 - Example of log:
 ```
@@ -122,8 +159,8 @@ sudo python3 main.py -d syn,udp -s 192.168.1.0/24
 1. Part of log is time, when attack was detected
 2. Part is a information that log is about New Host
 3. Part is interface on Mikrotik if it is known (if it is not known value will be "-")
-4. Part is an IP address of the new host
-5. Part is a MAC of the new host
+4. Part is a MAC address of the new host
+5. Part is an IP of the new host
 - Example of log:
 ```
 Mon Mar 22 14:57:38 2021; New Host; ether3; 00:50:56:C0:00:08; 192.168.133.135

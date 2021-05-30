@@ -10,12 +10,12 @@ from Modules.present_info_module import *
 class Bond:
     def __init__(self, mac, ip, interface, verification, info):
         # Info | MAC | IP | Int | Time | Verification
-        self.info = info  # information about host (New!, "", Fake!, IDS)
+        self.info = info  # information about host (New!, "", IDS)
         self.mac = mac  # MAC address of the host
         self.ip = ip  # IP address of the host
         self.int = interface  # on which interface on Mikrotik host is
         self.timer = time.perf_counter()  # how old is last info about host
-        # 0 = not verified, 1 = real, 2 = probably fake
+        # 0 = not verified, 1 = real
         self.verification = verification
         if info == "IDS":
             self.timer = 0
@@ -75,7 +75,7 @@ class ArpScan:
         time_is_up = time.perf_counter()
         index = 0
         for bond in self.list_of_bonds:
-            if time_is_up - bond.timer > self.interval_actual and bond.info != "IDS" and bond.info != "Fake?":
+            if time_is_up - bond.timer > self.interval_actual and bond.info != "IDS":
                 self.list_of_bonds.pop(index)
             index += 1
 
@@ -158,16 +158,6 @@ class ArpScan:
                 elif bond.mac == key and bond.verification > 1:
                     mac_int.pop(key)
                     break
-        if len(mac_int) != 0:
-            for interface in set_of_ints:
-                num = 1
-                mac = False
-                for key in mac_int:
-                    if mac_int[key] == interface:
-                        num += 1
-                        mac = key
-                if mac is not False and num > 2:
-                    self.list_of_bonds.append(Bond(mac, "-", interface, num, "Fake?"))
 
     # function for getting number of hosts in the network
     def get_hosts_in_network(self):
@@ -231,9 +221,6 @@ class ArpScan:
             self.timer_actual = time.perf_counter()
 
 
-
-
-
 # function for translating verification number to word comment
 def verification_to_string(value):
     if value == 0:
@@ -263,5 +250,3 @@ def get_my_ip():
     ip = s.getsockname()[0]
     s.close()
     return ip
-
-

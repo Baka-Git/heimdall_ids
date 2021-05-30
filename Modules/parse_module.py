@@ -67,18 +67,24 @@ def ssh_arg(args):
 
 
 def det_arg_con(list_of_det, list_of_timer, list_of_rule):
+    default_rules = [1 / 2, 20, 20, 20]
+    default_timers = [5, 5, 5, 1]
     if list_of_det is None:
         list_of_det = [False, False, False, False]
     if list_of_timer is None:
-        list_of_timer = [5, 5, 5, 1]
+        list_of_timer = default_timers
     if list_of_rule is None:
-        list_of_rule = [1 / 2, 20, 20, 20]
+        list_of_rule = default_rules
     list_con = [[False, 0, 0], [False, 0, 0], [False, 0, 0], [False, 0, 0]]
     for i in range(0, 4):
         if list_of_det[i] != 0:
             list_con[i][0] = True
             list_con[i][1] = list_of_timer[i]
+            if list_con[i][1] == 0 and list_con[i][0]:
+                list_con[i][1] = default_timers[i]
             list_con[i][2] = list_of_rule[i]
+            if list_con[i][2] == 0 and list_con[i][0]:
+                list_con[i][2] = default_rules[i]
 
     return list_con
 

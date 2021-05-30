@@ -13,7 +13,7 @@ class Packet:
     def packet_print(self):
         print("Type: " + str(self.type) + "\n"
               + "Source IP address: " + self.src + "\n"
-              + "Source Mac Addres: " + str(self.mac) + "\n"
+              + "Source MAC address: " + str(self.mac) + "\n"
               + "Flags: " + str(self.flag) + "\n")
 
 
@@ -34,4 +34,6 @@ class Packets:
 
     # restart list of lastpacket
     def refresh(self):
-        self.packets = []
+        if self.packets!=[] or len(self.packets)!=1:
+            for i in range(0,int(len(self.packets)/2)):
+                self.packets.pop(i)

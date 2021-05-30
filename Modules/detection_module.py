@@ -10,6 +10,8 @@ class Detection:
         # list of rules on one host, given by learning module, user or default
         self.rule_on_one_host = []
         self.list_of_timers = []
+        self.last_time_refresh=time.time()
+        self.timer_of_refresh=600
         # if detection is enabled, this will enabling each detection mode by given setting
         if det_con is not None:
             self.syn_on = det_con[0][0]
@@ -139,5 +141,7 @@ class Detection:
             # setting flags for SYN flood detection: 0-only syn,1-only ack,2-other
             # adding packet to the list of packets
             p = Packet(type, ether[0], ipv4_info[1], flag)
+            if time.time()-self.last_time_refresh > self.timer_of_refresh:
+                self.list_of_packets.refresh()
             self.list_of_packets.add_packet(p)
         return True
